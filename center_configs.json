@@ -2,12 +2,7 @@
   "CHLA": {
     "triage_col": "triage_acuity",
     "complaint_col": "raw_reason_for_visit",
-    "race_predictor": [
-      "is_hispanic",
-      "is_non_hispanic_black",
-      "is_asian",
-      "is_other"
-    ],
+    "race_predictor": ["is_hispanic", "is_non_hispanic_black", "is_asian", "is_other"],
     "race_names": {
       "is_hispanic vs. White": "Hispanic",
       "is_non_hispanic_black vs. White": "NH Black",
@@ -17,7 +12,8 @@
     "race_order": [
       "is_hispanic vs. White",
       "is_non_hispanic_black vs. White",
-      "is_asian vs. White"
+      "is_asian vs. White",
+      "is_other vs. White"
     ],
     "covariate_prefixes": [
       "is_male", "is_under_3_months", "is_three_to_6_months", "is_six_to_12_months",
@@ -63,12 +59,7 @@
   "BIDMC": {
     "triage_col": "acuity",
     "complaint_col": "chiefcomplaint",
-    "race_predictor": [
-      "is_hispanic",
-      "is_black",
-      "is_asian",
-      "is_other"
-    ],
+    "race_predictor": ["is_hispanic", "is_black", "is_asian", "is_other"],
     "race_names": {
       "is_hispanic vs. White": "Hispanic",
       "is_black vs. White": "NH Black",
@@ -78,7 +69,8 @@
     "race_order": [
       "is_hispanic vs. White",
       "is_black vs. White",
-      "is_asian vs. White"
+      "is_asian vs. White",
+      "is_other vs. White"
     ],
     "covariate_prefixes": [
       "is_male", "age_group_30_39", "age_group_40_49", "age_group_50_59",
@@ -110,12 +102,7 @@
   "Stanford": {
     "triage_col": "triage_acuity",
     "complaint_col": "raw_chief_complaint",
-    "race_predictor": [
-      "is_hispanic",
-      "is_black",
-      "is_asian",
-      "is_other"
-    ],
+    "race_predictor": ["is_hispanic", "is_black", "is_asian", "is_other"],
     "race_names": {
       "is_hispanic vs. White": "Hispanic",
       "is_black vs. White": "NH Black",
@@ -125,7 +112,8 @@
     "race_order": [
       "is_hispanic vs. White",
       "is_black vs. White",
-      "is_asian vs. White"
+      "is_asian vs. White",
+      "is_other vs. White"
     ],
     "covariate_prefixes": [
       "is_male", "age_group_30_39", "age_group_40_49", "age_group_50_59",
@@ -170,7 +158,8 @@
     "race_order": [
       "is_hispanic vs. White",
       "is_black vs. White",
-      "is_asian vs. White"
+      "is_asian vs. White",
+      "is_race_other vs. White"
     ],
     "covariate_prefixes": [
       "is_male", "is_trans_or_nb", "three_to_6_months", "six_to_12_months",
