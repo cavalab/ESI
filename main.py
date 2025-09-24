@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 import json
 import fire
+import os
 
 from src.high_risk_dictionary import (
     load_data_filter_acuity_2_3,
@@ -65,6 +66,8 @@ def main(
         path_base / bin_data,
         triage_col
     )
+
+    os.makedirs('results',exist_ok=True)
     data_acuity.to_csv(f'results/complaint_with_mask_{center}.csv', index=False)
 
     # Compare keywords
