@@ -14,6 +14,7 @@ This repository analyzes emergency department triage data and computational impl
 ```
 ESI-LaCava/
 ├── binarization_notebooks/     # Data preprocessing notebooks (not part of main analysis)
+├── CHLA_preprocessing/         # R code to preprocess CHLA data
 ├── figures/                    # Generated forest plots 
 ├── results/                    # Output CSV files with analysis results
 ├── src/                        # Core analysis modules
