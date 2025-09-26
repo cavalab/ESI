@@ -1097,9 +1097,10 @@ write.csv(data, file.path("preprocessed_data.csv"), row.names = FALSE)
 write.csv(table_all_vitals, file.path("all_vitals.csv"), row.names = FALSE)
 
 
+
 #Attach triage vitals.
-visits <- as.data.frame(fread("preprocessed_data.csv"))
-vitals <- as.data.frame(fread("all_vitals.csv"))
+visits <- as.data.frame(fread(file.path("preprocessed_data.csv")))
+vitals <- as.data.frame(fread(file.path("all_vitals.csv")))
 
 
 
