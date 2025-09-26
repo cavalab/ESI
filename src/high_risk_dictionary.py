@@ -6,6 +6,9 @@ from nltk.corpus import words
 from rapidfuzz import process
 import matplotlib.pyplot as plt
 
+# download database
+import nltk
+nltk.download('words') 
 
 # Global variables: Handbook Acuity Keywords
 simple_keywords = [

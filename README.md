@@ -37,6 +37,9 @@ ESI-LaCava/
 git clone https://github.com/yourusername/ESI-LaCava.git
 cd ESI-LaCava
 
+# if desired, make an environment with python 3.11 in it using conda or mamba
+mamba env create
+
 # Create virtual environment with Python 3.11
 python3.11 -m venv venv
 
