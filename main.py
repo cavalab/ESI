@@ -3,6 +3,7 @@ import numpy as np
 import json
 import fire
 import os
+import pandas as pd
 
 from src.high_risk_dictionary import (
     load_data_filter_acuity_2_3,
@@ -35,6 +36,7 @@ def main(
         mode: str = 'flagged_vs_unflagged',  # 'flagged_vs_unflagged', 'all_combinations'
         bin_data: str = None,
         visualize_stats=False,
+        run_analysis: bool = True,  # True: run full analysis, False: load existing results and plot only
         **plot_kwargs
 ):
 
@@ -56,58 +58,81 @@ def main(
     race_order = config['race_order']
     covariates_name = config['covariate_prefixes']
 
-    # 1. ESI Handbook: High risk symptoms
-    # Define data file name and save file name
-    if bin_data is None:
-        bin_data = f"preprocessed_{center}.csv"
+    if run_analysis:
+        print("Running full analysis pipeline...")
 
-    # Load data
-    data_acuity, bin_data = load_data_filter_acuity_2_3(
-        path_base / bin_data,
-        triage_col
-    )
+        # 1. ESI Handbook: High risk symptoms
+        # Define data file name and save file name
+        if bin_data is None:
+            bin_data = f"preprocessed_{center}.csv"
 
-    os.makedirs('results',exist_ok=True)
-    data_acuity.to_csv(f'results/complaint_with_mask_{center}.csv', index=False)
+        # Load data
+        data_acuity, bin_data = load_data_filter_acuity_2_3(
+            path_base / bin_data,
+            triage_col
+        )
 
-    # Compare keywords
-    complaint_with_mask, complaint_stats = keyword_detection_and_misspelling_correction(
-        data_acuity,
-        complaint_col
-    )
-    complaint_with_mask.to_csv(f'results/complaint_with_mask_and_vitals_{center}.csv', index=False)
+        os.makedirs('results',exist_ok=True)
+        data_acuity.to_csv(f'results/complaint_with_mask_{center}.csv', index=False)
 
-    if visualize_stats:
-        view_statistics_high_risk_keywords(complaint_stats)
+        # Compare keywords
+        complaint_with_mask, complaint_stats = keyword_detection_and_misspelling_correction(
+            data_acuity,
+            complaint_col
+        )
+        complaint_with_mask.to_csv(f'results/complaint_with_mask_and_vitals_{center}.csv', index=False)
 
-    # 2. ESI Handbook: Danger zone vital signs
-    complaint_all = is_danger_zone_vitals(complaint_with_mask, center)
+        if visualize_stats:
+            view_statistics_high_risk_keywords(complaint_stats)
 
-    # 3. Calculate Odds Ratios (Propensity Score Matching)
-    # Define markers
-    complaint_mode = define_markers(complaint_all)
+        # 2. ESI Handbook: Danger zone vital signs
+        complaint_all = is_danger_zone_vitals(complaint_with_mask, center)
 
-    # Remove visits with unknown race
-    complaint_mode = remove_unknown_race(complaint_mode)
+        # 3. Calculate Odds Ratios (Propensity Score Matching)
+        # Define markers
+        complaint_mode = define_markers(complaint_all)
 
-    # Calculate odd ratios and save
-    odds_ratios = calculate_psm_odds_ratios(
-        complaint_df=complaint_mode,
-        outcome_col=triage_col,
-        outcome_value=2,
-        predictor_prefix=race_predictor,
-        covariates=covariates_name,
-        mode=mode,
-        is_love_plot=False
-    )
-    odds_ratios.to_csv(f'results/odds_{center}_{mode}.csv', index=False)
+        # Remove visits with unknown race
+        complaint_mode = remove_unknown_race(complaint_mode)
 
-    # Calculate significance between pairs and save
-    significance = calculate_significance(
-        combined_results=odds_ratios,
-        race_order=race_order,
-        mode=mode)
-    significance.to_csv(f'results/sign_{center}_{mode}.csv', index=False)
+        # Calculate odd ratios and save
+        odds_ratios = calculate_psm_odds_ratios(
+            complaint_df=complaint_mode,
+            outcome_col=triage_col,
+            outcome_value=2,
+            predictor_prefix=race_predictor,
+            covariates=covariates_name,
+            mode=mode,
+            is_love_plot=False
+        )
+        odds_ratios.to_csv(f'results/odds_{center}_{mode}.csv', index=False)
+
+        # Calculate significance between pairs and save
+        significance = calculate_significance(
+            combined_results=odds_ratios,
+            race_order=race_order,
+            mode=mode)
+        significance.to_csv(f'results/sign_{center}_{mode}.csv', index=False)
+
+    else:
+        print("Loading existing results from results folder...")
+
+        # Load existing results
+        odds_file = f'results/odds_{center}_{mode}.csv'
+        significance_file = f'results/sign_{center}_{mode}.csv'
+
+        if not os.path.exists(odds_file):
+            raise FileNotFoundError(
+                f"Odds ratios file not found: {odds_file}. Run with run_analysis=True first.")
+        if not os.path.exists(significance_file):
+            raise FileNotFoundError(
+                f"Significance file not found: {significance_file}. Run with run_analysis=True first.")
+
+        odds_ratios = pd.read_csv(odds_file)
+        significance = pd.read_csv(significance_file)
+
+        print(f"Loaded odds ratios from: {odds_file}")
+        print(f"Loaded significance from: {significance_file}")
 
     # Create forest plot
     try:
