@@ -72,7 +72,7 @@ def main(
             triage_col
         )
 
-        os.makedirs('results',exist_ok=True)
+        os.makedirs('results', exist_ok=True)
         data_acuity.to_csv(f'results/complaint_with_mask_{center}.csv', index=False)
 
         # Compare keywords
