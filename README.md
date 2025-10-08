@@ -13,7 +13,7 @@ This repository analyzes emergency department triage data and computational impl
 ## Repository Structure
 ```
 ESI-LaCava/
-├── binarization_notebooks/     # Data preprocessing notebooks (not part of main analysis)
+├── binarization_code/          # Data binarization code 
 ├── CHLA_preprocessing/         # R code to preprocess CHLA data
 ├── figures/                    # Generated forest plots 
 ├── results/                    # Output CSV files with analysis results
@@ -52,17 +52,38 @@ pip install -r requirements.txt
 ```
 
 ### 2. Data Preparation
-The analysis expects preprocessed data files to be located at:
-```
-/Volumes/chip-lacava/Groups/CHLA-ED/data_binarized_ESI
-```
-#### Required Files:
-Ensure your preprocessed data files are in the data directory with the naming convention:
-```
-preprocessed_CHLA.csv
-preprocessed_BIDMC.csv
-preprocessed_Stanford.csv
-preprocessed_BCH.csv
+
+This analysis requires preprocessed data files with binarized covariates.
+These files are currently located at **/Volumes/chip-lacava/Groups/CHLA-ED/data_binarized_ESI/**:
+* preprocessed_CHLA.csv 
+* preprocessed_BIDMC.csv 
+* preprocessed_Stanford.csv 
+* preprocessed_BCH.csv
+
+#### 2.1 Data Preprocessing Pipeline
+
+If you need to generate these files from **raw data**, follow this two-step process:
+
+**Step 1: Raw Data → Preprocessed Data**
+
+Use the center-specific preprocessing repositories to convert raw data into preprocessed format:
+
+| Center   | Repository Link |
+|----------|----------------|
+| CHLA     | [Link to CHLA preprocessing repo] |
+| BIDMC    | [Link to BIDMC preprocessing repo] |
+| Stanford | [Link to Stanford preprocessing repo] |
+| BCH      | [Link to BCH preprocessing repo] |
+
+**Step 2: Preprocessed Data → Binarized Covariates**
+
+Run the appropriate binarization script for each center:
+
+```bash
+python binarization-CHLA.py      
+python binarization-BIDMC.py     
+python binarization-Stanford.py  
+python binarization-BCH.py       
 ```
 ### 3. Run Complete Analysis 
 Use the Jupyter notebook for properly formatted plots:
