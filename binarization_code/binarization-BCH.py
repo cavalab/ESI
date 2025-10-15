@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 # Define the data directory and filename
-data_dir = '/Volumes/chip-lacava/Private/ch269952/BCH'  # CHANGE!!!!!!!!!!!!!!
+data_dir = '/Volumes/chip-lacava/Groups/BCH-ED/reprocessing'
 filename = 'preprocessed-visits.csv'
 file_path = os.path.join(data_dir, filename)
 

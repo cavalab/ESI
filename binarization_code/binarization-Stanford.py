@@ -4,15 +4,12 @@ import os
 import pandas as pd
 
 # Define the data directory and filename
-data_dir = '/Volumes/chip-lacava/Private/ch269952/Stanford'  # CHANGE!!!!!!!!!!
+data_dir = '/Volumes/chip-lacava/Public/physionet.org/files/mc-med/disparities'
 filename_visits = 'preprocessed-visits-for-blanca.csv'
-filename_complaints = 'preprocessed-visits.csv'
 file_path_visits = os.path.join(data_dir, filename_visits)
-file_path_complaints = os.path.join(data_dir, filename_complaints)
 
 # Load preprocessed data
 data = pd.read_csv(file_path_visits)
-visits = pd.read_csv(file_path_complaints)
 
 # Create empty data frame
 data_bin = pd.DataFrame(index=data.index)
@@ -93,7 +90,7 @@ data_bin['triage_bp_unknown'] = (data['triage_bp'] == 'nan').astype(int)
 data_bin['triage_temp_fever'] = (data['triage_temp'] == 'fever').astype(int)
 data_bin['triage_temp_unknown'] = (data['triage_temp'] == 'nan').astype(int)
 
-# CHIEF COMPLAINTS: CHANGE!!!!!!!!!!!!!!!!!
+# CHIEF COMPLAINTS:
 chief_complaints = [
     'complaint_contains_abdominal_pain', 'complaint_contains_pelvic_pain', 'complaint_contains_chest_pain', 
     'complaint_contains_shortness_of_breath', 'complaint_contains_headache', 'complaint_contains_fever', 
@@ -105,7 +102,7 @@ chief_complaints = [
     'complaint_contains_head_and_neck', 'complaint_contains_hypertension', 'complaint_contains_skin', 
     'complaint_contains_genitourinary', 'complaint_contains_assault', 'complaint_contains_pregnancy', 
     'complaint_contains_shingles']
-data_bin[chief_complaints] = visits[chief_complaints]
+data_bin[chief_complaints] = data[chief_complaints]
 
 # ADD OTHER INFORMATION: triage acuity, triage vital signs, raw chief complaints
 columns_to_add = [

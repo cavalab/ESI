@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 # Define the data directory and filename
-data_dir = '/Volumes/chip-lacava/Private/ch269952/BIDMC'  # CHANGE!!!!!!!!!!
+data_dir = '/Volumes/chip-lacava/Public/physionet.org/files/mimic-iv-ed/2.2/disparities'
 filename_visits = 'preprocessed_data_with_triage_vitals.csv'
 filename_vitals = 'triage.csv'
 file_path_visits = os.path.join(data_dir, filename_visits)
