@@ -38,7 +38,7 @@ ESI-LaCava/
 git clone https://github.com/yourusername/ESI-LaCava.git
 cd ESI-LaCava
 
-# if desired, make an environment with python 3.11 in it using conda or mamba
+# if desired, make an environment with Python 3.11 in it using conda or mamba
 mamba env create
 
 # Create virtual environment with Python 3.11
@@ -66,18 +66,11 @@ If you need to generate these files from **raw data**, follow this two-step proc
 
 **Step 1: Raw Data → Preprocessed Data**
 
-Use the center-specific preprocessing repositories to convert raw data into preprocessed format:
-
-| Center   | Repository Link |
-|----------|----------------|
-| CHLA     | [Link to CHLA preprocessing repo] |
-| BIDMC    | [Link to BIDMC preprocessing repo] |
-| Stanford | [Link to Stanford preprocessing repo] |
-| BCH      | [Link to BCH preprocessing repo] |
+Use the following repository for center-specific preprocessing: ```https://github.com/hcoggan/ed-preprocessing```
 
 **Step 2: Preprocessed Data → Binarized Covariates**
 
-Run the appropriate binarization script for each center:
+Run the appropriate binarization script for each center: 
 
 ```bash
 python binarization-CHLA.py      
