@@ -66,7 +66,7 @@ If you need to generate these files from **raw data**, follow this two-step proc
 
 **Step 1: Raw Data → Preprocessed Data**
 
-Use the following repository for center-specific preprocessing: ```https://github.com/hcoggan/ed-preprocessing```
+Use the following repository for center-specific preprocessing: https://github.com/hcoggan/ed-preprocessing
 
 **Step 2: Preprocessed Data → Binarized Covariates**
 
