@@ -1,4 +1,4 @@
-# ESI-LaCava
+# ESI analysis
 
 Analysis of racial disparities in Emergency Severity Index (ESI) triage decisions using propensity score matching and high-risk symptom detection.
 
