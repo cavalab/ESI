@@ -32,7 +32,7 @@ def get_pals_threshold(age_group, age):
 
 def calculate_systolic_bp_diff_pals(data_matrix):
     data_matrix = data_matrix.copy()
-    systolic_bp = data_matrix['triage_blood_pressure_systolic']
+    systolic_bp = data_matrix['blood_pressure_systolic']
     
     # Calculate PALS threshold 
     pals_threshold = data_matrix.apply(lambda row: get_pals_threshold(row['age_group'], row['age']), axis=1)
@@ -135,10 +135,10 @@ def run(
 
         
     # HEART RATE: std per age group
-    data_bin['norm_heart_rate'] = get_vitals_rate_std_by_age(data_matrix=data, triage_vital_col='triage_heart_rate')
+    data_bin['norm_heart_rate'] = get_vitals_rate_std_by_age(data_matrix=data, triage_vital_col='heart_rate')
 
     # RESPIRATORY RATE: std per age group
-    data_bin['norm_respiratory_rate'] = get_vitals_rate_std_by_age(data_matrix=data, triage_vital_col='triage_respiratory_rate')
+    data_bin['norm_respiratory_rate'] = get_vitals_rate_std_by_age(data_matrix=data, triage_vital_col='respiratory_rate')
 
 
 
@@ -148,7 +148,7 @@ def run(
 
     # TEMPERATURE: positive distance from 38C
     fever_thresh = 38  # Celsius
-    data_bin['temp_fever'] = np.maximum(data['triage_temperature'] - fever_thresh, 0)
+    data_bin['temp_fever'] = np.maximum(data['temperature'] - fever_thresh, 0)
     mean_value = pd.to_numeric(data_bin['temp_fever'], errors='coerce').mean()  # replace NaN by mean value
     data_bin['temp_fever'] = data_bin['temp_fever'].fillna(mean_value)
 
@@ -181,13 +181,13 @@ def run(
 
     # ADD OTHER RAW INFORMATION
     columns_to_add = [
-        'triage_acuity', 'triage_temperature', 'triage_blood_pressure_systolic', 
-        'triage_blood_pressure_diastolic', 'raw_complaint', 'raw_reason_for_visit'
+        'triage_acuity', 'temperature', 'blood_pressure_systolic', 
+        'blood_pressure_diastolic', 'raw_complaint', 'raw_reason_for_visit'
     ]
     data_bin[columns_to_add] = data[columns_to_add]
-    data_bin['triage_hr'] = data['triage_heart_rate']
-    data_bin['triage_rr'] = data['triage_respiratory_rate']
-    data_bin['triage_spo2'] = data['triage_oxygen_saturation']
+    data_bin['triage_hr'] = data['heart_rate']
+    data_bin['triage_rr'] = data['respiratory_rate']
+    data_bin['triage_spo2'] = data['oxygen_saturation']
 
     diagnosis_list = ['diagnosis_anemia', 'diagnosis_pain_conditions', 'diagnosis_congenital_malformations', 
                     'diagnosis_cardiovascular', 'diagnosis_nausea_and_vomiting', 'diagnosis_epilepsy', 

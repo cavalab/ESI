@@ -31,15 +31,19 @@ def load_center_configs(config_file: str = "center_configs.json"):
 
 
 def main(
-        path_base=Path('/Volumes/chip-lacava/Groups/CHLA-ED/data_binarized_ESI'),
+        path_base='/Volumes/chip-lacava/Groups/CHLA-ED/data_binarized_ESI',
         center: str = "CHLA",  # 'BIDMC', 'Stanford', 'BCH', 'CHLA'
         mode: str = 'flagged_vs_unflagged',  # 'flagged_vs_unflagged', 'all_combinations'
         bin_data: str = None,
         visualize_stats=False,
-        run_analysis: bool = True,  # True: run full analysis, False: load existing results and plot only
-        **plot_kwargs
-):
+        save_dir=None,
 
+):
+    if not save_dir:
+        save_dir = f"results/{center}/{mode}"
+    else:
+        save_dir += f"/{center}/{mode}"
+    os.makedirs(save_dir, exist_ok=True)
     np.random.seed(13)  # set random seed
 
     print(f'Running {center} data ---------------------------')
@@ -58,96 +62,75 @@ def main(
     race_order = config['race_order']
     covariates_name = config['covariate_prefixes']
 
-    if run_analysis:
-        print("Running full analysis pipeline...")
+    print("Running full analysis pipeline...")
 
-        # 1. ESI Handbook: High risk symptoms
-        # Define data file name and save file name
-        if bin_data is None:
-            bin_data = f"preprocessed_{center}.csv"
+    # 1. ESI Handbook: High risk symptoms
+    # Define data file name and save file name
+    if bin_data is None:
+        bin_data = f"preprocessed_{center}.csv"
 
-        # Load data
-        data_acuity, bin_data = load_data_filter_acuity_2_3(
-            path_base / bin_data,
-            triage_col
+    # Load data
+    data_acuity, bin_data = load_data_filter_acuity_2_3(
+        f'{path_base}/{bin_data}',
+        triage_col
+    )
+
+    os.makedirs('results', exist_ok=True)
+    data_acuity.to_csv(f'{save_dir}/complaint_with_mask_{center}.csv', index=False)
+
+    # Compare keywords
+    complaint_with_mask, complaint_stats = keyword_detection_and_misspelling_correction(
+        data_acuity,
+        complaint_col
+    )
+    complaint_with_mask.to_csv(f'{save_dir}/complaint_with_mask_and_vitals_{center}.csv', index=False)
+
+    if visualize_stats:
+        view_statistics_high_risk_keywords(complaint_stats)
+
+    # 2. ESI Handbook: Danger zone vital signs
+    complaint_all = is_danger_zone_vitals(complaint_with_mask, center)
+
+    # 3. Calculate Odds Ratios (Propensity Score Matching)
+    # Define markers
+    complaint_mode = define_markers(complaint_all)
+
+    # Remove visits with unknown race
+    complaint_mode = remove_unknown_race(complaint_mode)
+
+    # Calculate odd ratios and save
+    odds_ratios = calculate_psm_odds_ratios(
+        complaint_df=complaint_mode,
+        outcome_col=triage_col,
+        outcome_value=2,
+        predictor_prefix=race_predictor,
+        covariates=covariates_name,
+        mode=mode,
+        is_love_plot=False
+    )
+
+    # Calculate significance between pairs and save
+    significance = calculate_significance(
+        combined_results=odds_ratios,
+        race_order=race_order,
+        mode=mode)
+
+    odds_ratios.to_csv(f'{save_dir}/odds_ratios.csv', index=False)
+    significance.to_csv(f'{save_dir}/significance.csv', index=False)
+
+    with open(f'{save_dir}/plot_kwargs.json','w') as of:
+        json.dump(
+            dict(
+                predictor_prefix='is_',
+                race_names=race_names,
+                race_order=race_order,
+                center=center,
+                mode=mode,
+            ),
+            of
         )
 
-        os.makedirs('results', exist_ok=True)
-        data_acuity.to_csv(f'results/complaint_with_mask_{center}.csv', index=False)
-
-        # Compare keywords
-        complaint_with_mask, complaint_stats = keyword_detection_and_misspelling_correction(
-            data_acuity,
-            complaint_col
-        )
-        complaint_with_mask.to_csv(f'results/complaint_with_mask_and_vitals_{center}.csv', index=False)
-
-        if visualize_stats:
-            view_statistics_high_risk_keywords(complaint_stats)
-
-        # 2. ESI Handbook: Danger zone vital signs
-        complaint_all = is_danger_zone_vitals(complaint_with_mask, center)
-
-        # 3. Calculate Odds Ratios (Propensity Score Matching)
-        # Define markers
-        complaint_mode = define_markers(complaint_all)
-
-        # Remove visits with unknown race
-        complaint_mode = remove_unknown_race(complaint_mode)
-
-        # Calculate odd ratios and save
-        odds_ratios = calculate_psm_odds_ratios(
-            complaint_df=complaint_mode,
-            outcome_col=triage_col,
-            outcome_value=2,
-            predictor_prefix=race_predictor,
-            covariates=covariates_name,
-            mode=mode,
-            is_love_plot=False
-        )
-        odds_ratios.to_csv(f'results/odds_{center}_{mode}.csv', index=False)
-
-        # Calculate significance between pairs and save
-        significance = calculate_significance(
-            combined_results=odds_ratios,
-            race_order=race_order,
-            mode=mode)
-        significance.to_csv(f'results/sign_{center}_{mode}.csv', index=False)
-
-    else:
-        print("Loading existing results from results folder...")
-
-        # Load existing results
-        odds_file = f'results/odds_{center}_{mode}.csv'
-        significance_file = f'results/sign_{center}_{mode}.csv'
-
-        if not os.path.exists(odds_file):
-            raise FileNotFoundError(
-                f"Odds ratios file not found: {odds_file}. Run with run_analysis=True first.")
-        if not os.path.exists(significance_file):
-            raise FileNotFoundError(
-                f"Significance file not found: {significance_file}. Run with run_analysis=True first.")
-
-        odds_ratios = pd.read_csv(odds_file)
-        significance = pd.read_csv(significance_file)
-
-        print(f"Loaded odds ratios from: {odds_file}")
-        print(f"Loaded significance from: {significance_file}")
-
-    # Create forest plot
-    try:
-        return plot_odds_ratios_with_forestplot(
-            combined_data=odds_ratios,
-            predictor_prefix='is_',
-            race_names=race_names,
-            race_order=race_order,
-            center=center,
-            significance_df=significance,
-            mode=mode,
-            **plot_kwargs
-        )
-    except Exception as e:
-        raise Exception(f"Error creating forest plot: {e}")
+    print(f'results saved to {save_dir}.')
 
 
 if __name__ == '__main__':

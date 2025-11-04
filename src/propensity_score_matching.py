@@ -368,7 +368,7 @@ def _get_stars(p):
     return ' ***' if p < 0.001 else ' **' if p < 0.01 else ' *' if p < 0.05 else ''
 
 
-def plot_odds_ratios_with_forestplot(combined_data, predictor_prefix, race_names, race_order,
+def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, race_order,
                                      center: str, significance_df=None, mode='flagged_vs_unflagged', ax=None):
     # Configuration for different modes
     config = {
@@ -401,18 +401,23 @@ def plot_odds_ratios_with_forestplot(combined_data, predictor_prefix, race_names
     cfg = config[mode]
 
     # Prepare data
-    plot_data = combined_data[combined_data['Variable'].str.startswith(predictor_prefix)].copy()
+    plot_data = odds_ratios[odds_ratios['Variable'].str.startswith(predictor_prefix)].copy()
     plot_data['group'] = plot_data['flag_combination'].map(cfg['group_map'])
     plot_data['term'] = plot_data['Variable']
 
     plot_data['OR [95% CI]'] = (plot_data['OR'].round(2).astype(str) +
                                 ' [' + plot_data['CI_lower'].round(2).astype(str) +
-                                ', ' + plot_data['CI_upper'].round(2).astype(str) + ']' +
+                                '-' + plot_data['CI_upper'].round(2).astype(str) + ']' +
                                 plot_data['pval'].apply(_get_stars))
+
+    plot_data['OR [95% CI]'] = plot_data.apply(lambda x:
+        f"{x['OR']:.2f} [{x['CI_lower']:.2f}-{x['CI_upper']:.2f}] {_get_stars(x['pval'])}",
+        axis=1
+        )
 
     # Build and sort forestplot DataFrame
     df_fp = plot_data[['term', 'group', 'OR', 'CI_lower', 'CI_upper', 'OR [95% CI]', 'n_visits']].copy()
-    df_fp.rename(columns={'n_visits': 'n'}, inplace=True)
+    df_fp.rename(columns={'n_visits': 'N'}, inplace=True)
 
     def sort_key(row):
         race_idx = race_order.index(row['term']) if row['term'] in race_order else len(race_order)
@@ -421,7 +426,9 @@ def plot_odds_ratios_with_forestplot(combined_data, predictor_prefix, race_names
 
     df_fp['sort_key'] = df_fp.apply(sort_key, axis=1)
     df_fp = df_fp.sort_values('sort_key').reset_index(drop=True).drop('sort_key', axis=1)
-    df_fp['n'] = df_fp['n'].apply(lambda x: str(int(float(x))) if pd.notnull(x) else '')
+    # df_fp['n'] = df_fp['n'].apply(lambda x: str(int(float(x))) if pd.notnull(x) else '')
+    df_fp['N'] = df_fp['N'].apply(lambda x: f'{round(float(x)/1000)}K' if pd.notnull(x) else '')
+
 
     # Rename race groups
     df_fp['term'] = df_fp['term'].map(race_names)
@@ -459,16 +466,19 @@ def plot_odds_ratios_with_forestplot(combined_data, predictor_prefix, race_names
                     hl='CI_upper',
                     varlabel='group',
                     groupvar='term',
-                    annote=['OR [95% CI]', 'n'],
-                    annoteheaders=['OR [95% CI]', 'n'],
+                    # annote=['OR [95% CI]', 'N'],
+                    # annoteheaders=['OR [95% CI]', 'N'],
+                    annote=['N', 'OR [95% CI]'],
+                    annoteheaders=['N', 'OR [95% CI]'],
                     xlabel='Odds Ratio',
                     color_alt_rows=True,
                     flush=True,
                     table=False,
                     logscale=True,
                     ax=ax)
-
-    ax.axvline(x=1, color='black', linestyle='--', linewidth=1)
+    ylim = ax.get_ylim()
+    ax.axvline(x=1, ymin=0, ymax=.9, color='black', linestyle='--', linewidth=1)
+    ax.set_ylim(ylim)
 
     # Adjust x-axis ticks
     _fix_axis_formatting(ax, df_fp)
@@ -476,7 +486,7 @@ def plot_odds_ratios_with_forestplot(combined_data, predictor_prefix, race_names
     # Add significance brackets
     if significance_df is not None:
         xlim = ax.get_xlim()
-        bracket_x_base = xlim[1] + 0.05 * (xlim[1] - xlim[0])
+        bracket_x_base = xlim[1] + 0.03 * (xlim[1] - xlim[0])
 
         reverse_race_names = {v: k for k, v in race_names.items()}
 
@@ -509,8 +519,8 @@ def plot_odds_ratios_with_forestplot(combined_data, predictor_prefix, race_names
                 # Add significance text
                 stars = '***' if row['p_value'] < 0.001 else '**' if row['p_value'] < 0.01 else '*' if row[
                                                                                                            'p_value'] < 0.05 else 'ns'
-                ax.text(bracket_x + 0.01, (y1 + y2) / 2 - 0.15, stars,
-                        ha='left', va='center', fontsize=15, zorder=10)
+                ax.text(bracket_x + 0.01, (y1 + y2) / 2 , stars,
+                        ha='left', va='center', fontsize=12, zorder=10, rotation=90)
 
         ax.set_xlim(xlim[0], xlim[1] * xlim_factor)
         ax.grid(False)

@@ -11,3 +11,5 @@ statsmodels==0.14.0
 forestplot==0.4.1
 fire
 notebook
+statannotations
+jupyter

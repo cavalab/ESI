@@ -24,6 +24,7 @@ ESI-LaCava/
 ├── center_configs.json         # Hospital-specific configuration variables
 ├── figure-ORs.ipynb            # Notebook for creating styled forest plots
 ├── main.py                     # Main analysis pipeline
+├── plot.py                     # Forest plot generation
 ├── requirements.txt            # Python dependencies
 └── README.md                   
 ```
