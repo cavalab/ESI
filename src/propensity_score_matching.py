@@ -77,7 +77,7 @@ def _view_love_plot(smd_before, smd_after, covariate_cols, race_label):
 
 
 def _calculate_vif(df, thresh=10.0):
-    print(f"\n--- VIF filtering ---")
+    print("\n--- VIF filtering ---")
     dropped = True
     while dropped:
         dropped = False
@@ -240,11 +240,11 @@ def calculate_psm_odds_ratios(complaint_df, outcome_col, outcome_value, predicto
                 )].copy()
 
             if len(flag_filtered_data) == 0:
-                print(f"     Skipping: No data after flag filtering")
+                print("     Skipping: No data after flag filtering")
                 continue
 
             if flag_filtered_data['exposure'].nunique() < 2:
-                print(f"     Skipping: Not enough variation in exposure after flag filtering")
+                print("     Skipping: Not enough variation in exposure after flag filtering")
                 continue
 
             # Perform matching using pre-calculated propensity scores
@@ -477,7 +477,7 @@ def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, 
                     logscale=True,
                     ax=ax)
     ylim = ax.get_ylim()
-    ax.axvline(x=1, ymin=0, ymax=.9, color='black', linestyle='--', linewidth=1)
+    ax.axvline(x=1, ymin=0, ymax=1.0, color='black', linestyle='--', linewidth=1)
     ax.set_ylim(ylim)
 
     # Adjust x-axis ticks
