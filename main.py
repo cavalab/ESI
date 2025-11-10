@@ -1,9 +1,7 @@
-from pathlib import Path
 import numpy as np
 import json
 import fire
 import os
-import pandas as pd
 
 from src.high_risk_dictionary import (
     load_data_filter_acuity_2_3,
@@ -19,8 +17,7 @@ from src.propensity_score_matching import (
     define_markers,
     remove_unknown_race,
     calculate_psm_odds_ratios,
-    calculate_significance,
-    plot_odds_ratios_with_forestplot
+    calculate_significance
 )
 
 
@@ -76,20 +73,21 @@ def main(
     )
 
     os.makedirs('results', exist_ok=True)
-    data_acuity.to_csv(f'{save_dir}/complaint_with_mask_{center}.csv', index=False)
 
     # Compare keywords
     complaint_with_mask, complaint_stats = keyword_detection_and_misspelling_correction(
         data_acuity,
         complaint_col
     )
-    complaint_with_mask.to_csv(f'{save_dir}/complaint_with_mask_and_vitals_{center}.csv', index=False)
+    # complaint_with_mask.to_csv(f'{save_dir}/complaint_with_mask{center}.csv', index=False)
 
     if visualize_stats:
         view_statistics_high_risk_keywords(complaint_stats)
 
     # 2. ESI Handbook: Danger zone vital signs
     complaint_all = is_danger_zone_vitals(complaint_with_mask, center)
+    # Save CSV file
+    complaint_all.to_csv(f"{save_dir}/complaint_with_mask_and_vitals_{center}.csv", index=False)
 
     # 3. Calculate Odds Ratios (Propensity Score Matching)
     # Define markers

@@ -7,6 +7,7 @@ centers=(
 
 path_base="data"
 mode="flagged_vs_unflagged"
+# mode="all_combinations"
 
 for center in ${centers[@]}
 do 

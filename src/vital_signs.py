@@ -1,5 +1,3 @@
-from pathlib import Path
-import pandas as pd
 
 # ESI Handbook High Risk Vital Signs
 target_vitals = ["triage_hr", "triage_rr", "triage_spo2"]
@@ -64,8 +62,6 @@ def is_danger_zone_vitals(df, center):
     print(f"Number of rows flagged as danger zone: {flagged_count}")
     print(f"Percentage of rows flagged: {flagged_count / total_count * 100:.2f}%")
 
-    # Save CSV file
-    df.to_csv(f"results/complaint_with_mask_and_vitals_{center}.csv", index=False)
 
     return df
 

@@ -368,8 +368,21 @@ def _get_stars(p):
     return ' ***' if p < 0.001 else ' **' if p < 0.01 else ' *' if p < 0.05 else ''
 
 
-def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, race_order,
-                                     center: str, significance_df=None, mode='flagged_vs_unflagged', ax=None):
+def plot_odds_ratios_with_forestplot(
+    odds_ratios,
+    predictor_prefix,
+    race_names,
+    race_order,
+    center: str,
+    significance_df=None,
+    mode="flagged_vs_unflagged",
+    ax=None,
+    group_subsets=None,
+    esi_subsets=None,
+    group_filters=None,
+    esi_filters=None,
+    **kwargs
+):
     # Configuration for different modes
     config = {
         'flagged_vs_unflagged': {
@@ -405,11 +418,6 @@ def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, 
     plot_data['group'] = plot_data['flag_combination'].map(cfg['group_map'])
     plot_data['term'] = plot_data['Variable']
 
-    plot_data['OR [95% CI]'] = (plot_data['OR'].round(2).astype(str) +
-                                ' [' + plot_data['CI_lower'].round(2).astype(str) +
-                                '-' + plot_data['CI_upper'].round(2).astype(str) + ']' +
-                                plot_data['pval'].apply(_get_stars))
-
     plot_data['OR [95% CI]'] = plot_data.apply(lambda x:
         f"{x['OR']:.2f} [{x['CI_lower']:.2f}-{x['CI_upper']:.2f}] {_get_stars(x['pval'])}",
         axis=1
@@ -432,6 +440,16 @@ def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, 
 
     # Rename race groups
     df_fp['term'] = df_fp['term'].map(race_names)
+
+    # optionally subset data
+    if group_subsets:
+        df_fp = df_fp[df_fp['term'].isin(group_subsets)]
+    if esi_subsets:
+        df_fp = df_fp[df_fp['group'].isin(esi_subsets)]
+    if group_filters:
+        df_fp = df_fp[~df_fp['term'].isin(group_filters)]
+    if esi_filters:
+        df_fp = df_fp[~df_fp['group'].isin(esi_filters)]
 
     # Create y-position mapping (accounting for different group counts per mode)
     y_positions = {}
@@ -475,7 +493,9 @@ def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, 
                     flush=True,
                     table=False,
                     logscale=True,
-                    ax=ax)
+                    ax=ax,
+                    **kwargs
+                    )
     ylim = ax.get_ylim()
     ax.axvline(x=1, ymin=0, ymax=1.0, color='black', linestyle='--', linewidth=1)
     ax.set_ylim(ylim)
@@ -507,6 +527,9 @@ def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, 
                 combo1_group = cfg['group_map'][cfg['sig_map'][row['Combination1']]]
                 combo2_group = cfg['group_map'][cfg['sig_map'][row['Combination2']]]
 
+                if combo1_group not in y_positions[race] or combo2_group not in y_positions[race]: 
+                    continue
+
                 # Get bracket positions and draw
                 y1, y2 = y_positions[race][combo1_group], y_positions[race][combo2_group]
                 bracket_x = bracket_x_base + (bracket_idx * 0.1 * (xlim[1] - xlim[0]))
@@ -525,6 +548,4 @@ def plot_odds_ratios_with_forestplot(odds_ratios, predictor_prefix, race_names, 
         ax.set_xlim(xlim[0], xlim[1] * xlim_factor)
         ax.grid(False)
 
-    # plt.savefig(f"figures/forestplot_{center}_{mode}.png", bbox_inches='tight', dpi=600)
-    # plt.show()
     return df_fp, ax
