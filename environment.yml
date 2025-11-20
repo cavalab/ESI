@@ -1,3 +1,3 @@
-name: ESI
+name: esi
 dependencies:
   - python=3.11

@@ -13,3 +13,4 @@ fire
 notebook
 statannotations
 jupyter
+tableone
