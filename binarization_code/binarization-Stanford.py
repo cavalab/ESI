@@ -96,16 +96,35 @@ def run(
 
     # CHIEF COMPLAINTS:
     chief_complaints = [
-        'complaint_contains_abdominal_pain', 'complaint_contains_pelvic_pain', 'complaint_contains_chest_pain', 
-        'complaint_contains_shortness_of_breath', 'complaint_contains_headache', 'complaint_contains_fever', 
-        'complaint_contains_fall', 'complaint_contains_ortho', 'complaint_contains_dizziness', 
-        'complaint_contains_weakness', 'complaint_contains_other_abdomen_complaint', 'complaint_contains_cough', 
-        'complaint_contains_chest', 'complaint_contains_flank_pain', 'complaint_contains_neuro', 
-        'complaint_contains_psych', 'complaint_contains_seizure', 'complaint_contains_crash', 
-        'complaint_contains_vaginal', 'complaint_contains_cardiac', 'complaint_contains_syncope', 
-        'complaint_contains_head_and_neck', 'complaint_contains_hypertension', 'complaint_contains_skin', 
-        'complaint_contains_genitourinary', 'complaint_contains_assault', 'complaint_contains_pregnancy', 
-        'complaint_contains_shingles']
+        "complaint_contains_abdominal_pain",
+        "complaint_contains_pelvic_pain",
+        "complaint_contains_chest_pain",
+        "complaint_contains_shortness_of_breath",
+        "complaint_contains_headache",
+        "complaint_contains_fever",
+        "complaint_contains_fall",
+        "complaint_contains_ortho",
+        "complaint_contains_dizziness",
+        "complaint_contains_weakness",
+        "complaint_contains_other_abdomen_complaint",
+        "complaint_contains_cough",
+        "complaint_contains_chest",
+        "complaint_contains_flank_pain",
+        "complaint_contains_neuro",
+        "complaint_contains_psych",
+        "complaint_contains_seizure",
+        "complaint_contains_crash",
+        "complaint_contains_vaginal",
+        "complaint_contains_cardiac",
+        "complaint_contains_syncope",
+        "complaint_contains_head_and_neck",
+        "complaint_contains_hypertension",
+        "complaint_contains_skin",
+        "complaint_contains_genitourinary",
+        "complaint_contains_assault",
+        "complaint_contains_pregnancy",
+        "complaint_contains_shingles",
+    ]
 
     data_bin[chief_complaints] = data[chief_complaints]
 

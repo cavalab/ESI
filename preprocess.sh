@@ -18,7 +18,7 @@ ln -s \
     data/from-r/BIDMC-triage.csv
 
 ln -s \
-    /Volumes/chip-lacava/Public/physionet.org/files/mc-med/disparities/preprocessed-visits.csv \
+    /Volumes/chip-lacava/Public/physionet.org/files/mc-med/disparities/preprocessed-visits-for-blanca.csv \
     data/from-r/stanford.csv
 
 ln -s \
