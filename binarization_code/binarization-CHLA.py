@@ -1,6 +1,5 @@
 # CHLA: Covariate Binarization
 
-import os
 import pandas as pd
 import numpy as np
 import fire
@@ -181,8 +180,13 @@ def run(
 
     # ADD OTHER RAW INFORMATION
     columns_to_add = [
-        'triage_acuity', 'temperature', 'blood_pressure_systolic', 
-        'blood_pressure_diastolic', 'raw_complaint', 'raw_reason_for_visit'
+        "triage_acuity",
+        "temperature",
+        "blood_pressure_systolic",
+        "blood_pressure_diastolic",
+        "raw_complaint",
+        "raw_reason_for_visit",
+        'ed_los'
     ]
     data_bin[columns_to_add] = data[columns_to_add]
     data_bin['triage_hr'] = data['heart_rate']

@@ -1,6 +1,5 @@
 # BCH: Covariate Binarization
 
-import os
 import pandas as pd
 import numpy as np
 import fire
@@ -179,6 +178,7 @@ def run(
         'triage_pain', 
         'triage_sbp', 
         'complaint',
+        'ed_los'
     ]
     data_bin = pd.concat([data_bin,data[pre_diagnosis_list + chief_complaints + columns_to_add]],axis=1)
 

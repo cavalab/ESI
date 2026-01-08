@@ -1,6 +1,5 @@
 # CHLA: Covariate Binarization
 
-import os
 import pandas as pd
 import fire
 
@@ -112,12 +111,31 @@ def run(
 
     # ADD OTHER INFORMATION: triage acuity, triage vital signs, raw chief complaints
     columns_to_add = [
-        'triage_acuity', 'cc', 'pre_diagnosis_mi', 'pre_diagnosis_chf', 'pre_diagnosis_pvd', 'pre_diagnosis_cevd', 
-        'pre_diagnosis_dementia', 'pre_diagnosis_cpd', 'pre_diagnosis_rheumd', 'pre_diagnosis_pud', 
-        'pre_diagnosis_mld', 'pre_diagnosis_diab', 'pre_diagnosis_diabwc', 'pre_diagnosis_hp', 
-        'pre_diagnosis_rend', 'pre_diagnosis_canc', 'pre_diagnosis_msld', 'pre_diagnosis_metacanc', 
-        'pre_diagnosis_aids', 'raw_triage_sbp', 'raw_triage_dbp', 
-        'raw_triage_temp', 'raw_chief_complaint', 'is_admitted'
+        "triage_acuity",
+        "cc",
+        "pre_diagnosis_mi",
+        "pre_diagnosis_chf",
+        "pre_diagnosis_pvd",
+        "pre_diagnosis_cevd",
+        "pre_diagnosis_dementia",
+        "pre_diagnosis_cpd",
+        "pre_diagnosis_rheumd",
+        "pre_diagnosis_pud",
+        "pre_diagnosis_mld",
+        "pre_diagnosis_diab",
+        "pre_diagnosis_diabwc",
+        "pre_diagnosis_hp",
+        "pre_diagnosis_rend",
+        "pre_diagnosis_canc",
+        "pre_diagnosis_msld",
+        "pre_diagnosis_metacanc",
+        "pre_diagnosis_aids",
+        "raw_triage_sbp",
+        "raw_triage_dbp",
+        "raw_triage_temp",
+        "raw_chief_complaint",
+        "is_admitted",
+        'ed_los'
     ]
     data_bin[columns_to_add] = data[columns_to_add]
     data_bin['triage_hr'] = data['raw_triage_hr']

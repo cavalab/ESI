@@ -119,7 +119,16 @@ def run(
     data_bin[chief_complaints] = data[chief_complaints]
 
     # ADDITIONAL RAW INFORMATION: triage acuity, triage vital signs, raw chief complaints, admission flags
-    columns_to_add = ['temperature', 'sbp', 'dbp', 'pain', 'acuity', 'chiefcomplaint', 'is_admitted']
+    columns_to_add = [
+        "temperature",
+        "sbp",
+        "dbp",
+        "pain",
+        "acuity",
+        "chiefcomplaint",
+        "is_admitted",
+        'ed_los'
+    ]
     data_bin[columns_to_add] = data[columns_to_add]
     data_bin['triage_hr'] = data['heartrate']
     data_bin['triage_rr'] = data['resprate']

@@ -54,6 +54,14 @@ pip install -r requirements.txt
 
 ### 2. Data Preparation
 
+tl;dr:
+
+```
+bash preprocess.sh
+bash binarize.sh
+bash run_analysis.sh
+```
+
 This analysis requires preprocessed data files with binarized covariates.
 These files are currently located at **/Volumes/chip-lacava/Groups/CHLA-ED/data_binarized_ESI/**:
 * preprocessed_CHLA.csv 
