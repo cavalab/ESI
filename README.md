@@ -62,13 +62,6 @@ bash binarize.sh
 bash run_analysis.sh
 ```
 
-This analysis requires preprocessed data files with binarized covariates.
-These files are currently located at **/Volumes/chip-lacava/Groups/CHLA-ED/data_binarized_ESI/**:
-* preprocessed_CHLA.csv 
-* preprocessed_BIDMC.csv 
-* preprocessed_Stanford.csv 
-* preprocessed_BCH.csv
-
 #### 2.1 Data Preprocessing Pipeline
 
 If you need to generate these files from **raw data**, follow this two-step process:
@@ -76,6 +69,13 @@ If you need to generate these files from **raw data**, follow this two-step proc
 **Step 1: Raw Data → Preprocessed Data**
 
 Use the following repository for center-specific preprocessing: https://github.com/hcoggan/ed-preprocessing
+
+This script results in the following preprocessed datasets:
+
+* preprocessed_CHLA.csv : Private data from Children's Los Angeles (Pediatric West)
+* preprocessed_BIDMC.csv : Derived from the publicly available [MIMIC-IV-ED](https://physionet.org/content/mimic-iv-ed/2.2/) dataset from Beth Israel Deaconess (Adult East)
+* preprocessed_Stanford.csv : Derived from the publicly available [MC-MED](https://physionet.org/content/mc-med/1.0.0/) dataset from Stanford Hospital (Adult West)
+* preprocessed_BCH.csv: Private data from Boston Children's Hospital (Pediatric East)
 
 **Step 2: Preprocessed Data → Binarized Covariates**
 
@@ -87,6 +87,9 @@ python binarization-BIDMC.py
 python binarization-Stanford.py  
 python binarization-BCH.py       
 ```
+
+This creates {dataset}_binarized.csv datasets which are used in the main analysis.
+
 ### 3. Run Complete Analysis 
 Use the Jupyter notebook for properly formatted plots:
 
