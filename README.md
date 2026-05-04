@@ -36,7 +36,7 @@ ESI-LaCava/
 
 ```
 # Clone the repository
-git clone https://github.com/yourusername/ESI-LaCava.git
+git clone https://github.com/yourusername/ESI.git
 cd ESI-LaCava
 
 # if desired, make an environment with Python 3.11 in it using conda or mamba
