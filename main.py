@@ -28,7 +28,7 @@ def load_center_configs(config_file: str = "center_configs.json"):
 
 
 def main(
-        path_base='./',
+        path_base='./data',
         center: str = "CHLA",  # 'BIDMC', 'Stanford', 'BCH', 'CHLA'
         mode: str = 'flagged_vs_unflagged',  # 'flagged_vs_unflagged', 'all_combinations'
         bin_data: str = None,
