@@ -91,18 +91,17 @@ python binarization-BCH.py
 This creates {dataset}_binarized.csv datasets which are used in the main analysis.
 
 ### 3. Run Complete Analysis 
-Use the Jupyter notebook for properly formatted plots:
+See `run_analysis.sh`, which computes the OR comparisons as follows:
 
-1. Open figure-ORs.ipynb
-2. Run first cell to generate analysis for all centers
-3. The notebook will:
-   1. Run the complete analysis pipeline for each center 
-   2. Apply proper plot formatting and styling 
-   3. Generate the final forest plot with all centers 
-   4. Save results to figures/or_all_{mode}.pdf
-4. Alternative: Command Line Interface
+```
+python main.py \
+     --path_base ${data_base_directory} \
+     --mode flagged_vs_unflagged \
+     --center ${center} \ #e.g. BIDMC
+     --save_dir ${results_directory}
+```
 
-Note: Command line usage will generate basic plots without the custom formatting.
+`forest_plot.ipynb` visualizes these results.
 
 ## Configuration
 ### Hospital Centers
