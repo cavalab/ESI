@@ -1,5 +1,7 @@
 # ESI analysis
 
+[![DOI](https://zenodo.org/badge/1081431914.svg)](https://doi.org/10.5281/zenodo.22085433)
+
 Analysis of racial disparities in Emergency Severity Index (ESI) triage decisions using propensity score matching and high-risk symptom detection.
 
 **Authors:** Blanca Romero Milà, Helena Coggan, Andrew M. Fine, Yuval Barak-Corren, Ben Y. Reis, Jaya Aysola, Pradip P. Chaudhari, and William G. La Cava.
